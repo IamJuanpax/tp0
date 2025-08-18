@@ -76,6 +76,7 @@ int main(void)
 	conexion = crear_conexion(ip, puerto);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
+	enviar_mensaje(valor, conexion);
 
 	// Armamos y enviamos el paquete
 	paquete(conexion);
@@ -129,13 +130,19 @@ void leer_consola(t_log* logger)
 void paquete(int conexion)
 {
 	// Ahora toca lo divertido!
-	char* leido;
-	t_paquete* paquete;
+	t_paquete* paquete = crear_paquete();
 
 	// Leemos y esta vez agregamos las lineas al paquete
-
+	char* leido = readline("> ");
+	do
+	{
+		agregar_a_paquete(paquete, leido, strlen(leido) + 1); // +1 para incluir el '\0'
+		free(leido); // Liberamos la memoria de la línea leída
+		leido = readline("> "); // Leemos la siguiente línea
+	} while (leido != NULL);
 
 	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
+	enviar_paquete(paquete, conexion);
 	
 }
 
@@ -146,4 +153,6 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 
 	log_destroy(logger);
 	config_destroy(config);
+	eliminar_paquete(paquete);
+	liberar_conexion(conexion);
 }
