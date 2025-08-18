@@ -16,10 +16,9 @@ void* serializar_paquete(t_paquete* paquete, int bytes)
 	return magic;
 }
 
-int crear_conexion(char *ip, char* puerto)
+int crear_conexion(char* ip, char* puerto)
 {
-	struct addrinfo hints;
-	struct addrinfo *server_info;
+	struct addrinfo hints, *server_info;
 
 	int err;
 
@@ -37,7 +36,7 @@ int crear_conexion(char *ip, char* puerto)
                          server_info->ai_protocol);
 
 	// Ahora que tenemos el socket, vamos a conectarlo
-
+	err = connect(fd_conexion, server_info->ai_addr, server_info->ai_addrlen);
 
 	freeaddrinfo(server_info);
 
