@@ -4,7 +4,7 @@ int main(void)
 {
 	/*---------------------------------------------------PARTE 2-------------------------------------------------------------*/
 
-	int conexion;
+	int conexion; 
 	char* ip;
 	char* puerto;
 	char* valor;
@@ -14,20 +14,54 @@ int main(void)
 
 	/* ---------------- LOGGING ---------------- */
 
+	// Loggear en consola y en un archivo llamado tp0.log con el nivel de log DEBUG
 	logger = iniciar_logger();
+	if(logger == NULL) {
+		fprintf(stderr, "No se pudo crear el logger. Saliendo del programa.\n");
+		exit(EXIT_FAILURE);
+	}
 
 	// Usando el logger creado previamente
 	// Escribi: "Hola! Soy un log"
+
+	log_info(logger, "Hola! Soy un log");
 
 
 	/* ---------------- ARCHIVOS DE CONFIGURACION ---------------- */
 
 	config = iniciar_config();
+	if(config == NULL) {
+		log_error(logger, "No se pudo crear el archivo de configuración. Saliendo del programa.");
+		exit(EXIT_FAILURE);
+	}
 
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
+	valor = config_get_string_value(config, "CLAVE"); 
+	if (valor == NULL) {
+		log_error(logger, "No se pudo obtener el valor de CLAVE del archivo de configuración.");
+		exit(EXIT_FAILURE);
+	}
+
+	ip = config_get_string_value(config, "IP");
+	if (ip == NULL) {
+		log_error(logger, "No se pudo obtener la IP del archivo de configuración.");
+		exit(EXIT_FAILURE);
+	}
+
+	puerto = config_get_string_value(config, "PUERTO"); 
+	if (puerto == NULL) {
+		log_error(logger, "No se pudo obtener el puerto del archivo de configuración.");
+		exit(EXIT_FAILURE);
+	}
+
+
+
 	// Loggeamos el valor de config
+	log_info(logger, "Valor de CLAVE: %s", valor);
+	log_info(logger, "IP: %s", ip);
+	log_info(logger, "PUERTO: %s", puerto);
 
 
 	/* ---------------- LEER DE CONSOLA ---------------- */
@@ -54,14 +88,21 @@ int main(void)
 
 t_log* iniciar_logger(void)
 {
-	t_log* nuevo_logger;
+	char* file = "cliente.log";
+	char* process_name = "CLIENTE_LOGGER";
+	bool is_active_console = true;
+	t_log_level level = LOG_LEVEL_DEBUG;
+
+	t_log* nuevo_logger = log_create(file, process_name, is_active_console, level);
 
 	return nuevo_logger;
 }
 
 t_config* iniciar_config(void)
 {
-	t_config* nuevo_config;
+	char* path = "cliente.config";
+
+	t_config* nuevo_config = config_create(path);
 
 	return nuevo_config;
 }
@@ -74,8 +115,13 @@ void leer_consola(t_log* logger)
 	leido = readline("> ");
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
-
-
+	do
+	{
+		log_info(logger, "Leído de consola: %s", leido);
+		free(leido); // Liberamos la memoria de la línea leída
+		leido = readline("> "); // Leemos la siguiente línea
+	} while (leido != NULL);
+	
 	// ¡No te olvides de liberar las lineas antes de regresar!
 
 }
@@ -97,4 +143,7 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 {
 	/* Y por ultimo, hay que liberar lo que utilizamos (conexion, log y config) 
 	  con las funciones de las commons y del TP mencionadas en el enunciado */
+
+	log_destroy(logger);
+	config_destroy(config);
 }

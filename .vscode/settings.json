@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "log.h": "c",
+        "config.h": "c",
+        "string.h": "c",
+        "signal.h": "c",
+        "unistd.h": "c",
+        "netdb.h": "c"
+    }
+}
