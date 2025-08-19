@@ -85,6 +85,7 @@ int main(void)
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
+	printf("¡Programa finalizado correctamente!\n");
 }
 
 t_log* iniciar_logger(void)
@@ -121,7 +122,8 @@ void leer_consola(t_log* logger)
 		log_info(logger, "Leído de consola: %s", leido);
 		free(leido); // Liberamos la memoria de la línea leída
 		leido = readline("> "); // Leemos la siguiente línea
-	} while (leido != NULL);
+	} while (leido != NULL && strlen(leido) > 0);
+	free(leido);
 	
 	// ¡No te olvides de liberar las lineas antes de regresar!
 
@@ -139,11 +141,13 @@ void paquete(int conexion)
 		agregar_a_paquete(paquete, leido, strlen(leido) + 1); // +1 para incluir el '\0'
 		free(leido); // Liberamos la memoria de la línea leída
 		leido = readline("> "); // Leemos la siguiente línea
-	} while (leido != NULL);
+	} while (leido != NULL && strlen(leido) > 0);
+	free(leido);
 
 	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
 	enviar_paquete(paquete, conexion);
 	
+	eliminar_paquete(paquete);
 }
 
 void terminar_programa(int conexion, t_log* logger, t_config* config)
@@ -153,6 +157,5 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 
 	log_destroy(logger);
 	config_destroy(config);
-	//eliminar_paquete(paquete);
 	liberar_conexion(conexion);
 }

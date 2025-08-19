@@ -27,7 +27,7 @@ int iniciar_servidor(void)
 	err = bind(fd_escucha, servinfo->ai_addr, servinfo->ai_addrlen);
 
 	// Activamos el modo escucha del socket
-	// err = setsockopt(fd_escucha, SOL_SOCKET, SO_REUSEPORT, &(int){1}, sizeof(int));   // Esto no se si va (me da error en SO_REUSEPORT) 
+	err = setsockopt(fd_escucha, SOL_SOCKET, SO_REUSEPORT, &(int){1}, sizeof(int));   // Esto no se si va (me da error en SO_REUSEPORT) 
 
 	// Escuchamos las conexiones entrantes
 	err = listen(fd_escucha, SOMAXCONN);
@@ -78,7 +78,7 @@ void recibir_mensaje(int socket_cliente)
 {
 	int size;
 	char* buffer = recibir_buffer(&size, socket_cliente);
-	log_info(logger, "Me llego el mensaje %s", buffer);
+	log_info(logger, "Me llego el mensaje: %s", buffer);
 	free(buffer);
 }
 

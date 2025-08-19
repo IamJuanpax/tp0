@@ -29,7 +29,7 @@ int crear_conexion(char* ip, char* puerto)
 	err = getaddrinfo(ip, puerto, &hints, &server_info);
 
 	// Ahora vamos a crear el socket.
-	int socket_cliente = 0;
+	//int socket_cliente = 0;
 
 	int fd_conexion = socket(server_info->ai_family,
                          server_info->ai_socktype,
@@ -40,7 +40,7 @@ int crear_conexion(char* ip, char* puerto)
 
 	freeaddrinfo(server_info);
 
-	return socket_cliente;
+	return fd_conexion;
 }
 
 void enviar_mensaje(char* mensaje, int socket_cliente)
