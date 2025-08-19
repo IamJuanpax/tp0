@@ -75,8 +75,12 @@ int main(void)
 	// Creamos una conexión hacia el servidor
 	conexion = crear_conexion(ip, puerto);
 
+	printf("Enviando mensaje al servidor... \n");
+
 	// Enviamos al servidor el valor de CLAVE como mensaje
 	enviar_mensaje(valor, conexion);
+
+	printf("Escribe el paquete a enviar al servidor: \n");
 
 	// Armamos y enviamos el paquete
 	paquete(conexion);
