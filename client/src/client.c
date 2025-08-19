@@ -153,6 +153,6 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 
 	log_destroy(logger);
 	config_destroy(config);
-	eliminar_paquete(paquete);
+	//eliminar_paquete(paquete);
 	liberar_conexion(conexion);
 }
